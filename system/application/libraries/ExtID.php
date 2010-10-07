@@ -539,7 +539,9 @@ class ExtID {
 					$result = array(
 						'nickname' => $data->screen_name,
 						'fullname' => $data->name,
-						'email'    => null  // Twitter does not supply email for security purposes
+						'email'    => null,  // Twitter does not supply email for security purposes
+						'id'       => $data->id  // Supply the user id for Twitter as there is no
+					                             // guarentee of getting any other identifiable info
 					);
 				}
 				else
@@ -563,6 +565,10 @@ class ExtID {
 				);
 			break;
 		}
+		
+		// Add extra provider data
+		$result['provider'] = $provider;
+		$result['address']  = $provider_config['address'];
 		
 		return $result;
 	}

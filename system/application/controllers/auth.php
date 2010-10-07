@@ -11,23 +11,7 @@ class Auth extends Controller {
 	// The main test page
 	function index()
 	{
-		$config = array(
-			'route' => 'auth/login',
-			'list_id' => 'login',
-			'classname' => 'login-item',
-			'icon_route' => 'auth/load_icon',
-			'callback' => 'auth/callback',
-			'providers' => array( 'openid', 'facebook', 'twitter', 'google', 'yahoo', 'aol', 'blogger' ),
-			'facebook' => array(
-				'app_id' => '122621151124354',
-				'secret' => '57d1575a06df819ea0a12f146f7cf6f5'
-			),
-			'twitter' => array(
-				'app_id' => 'WufM1zUzvOA3zJX335kCZA',
-				'secret' => 'Fat3eReSifyozkktebMDaigcGifRwnLQgtMCYrpc'
-			)
-		);
-		$data['login_code'] = $this->extid->generate_login($config);
+		$data['login_code'] = $this->extid->generate_login('default');
 		$this->load->view('auth_test', $data);
 	}
 	
