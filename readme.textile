@@ -1,0 +1,99 @@
+h1. ExtID
+
+Author: James Brumond
+Version 0.2.2-b
+
+Copyright 2010 James Brumond
+Dual licensed under MIT and GPL
+
+h2. Description
+
+An easy to use external authentication library for CodeIgniter applications. This library handles both OpenID and OAuth requests to provide a simple interface to remote authentication.
+
+For full documentation, see the project home page at http://code.kbjrweb.com/project/extid
+
+h2. Installation
+
+All of the files are stored in this repository in their respective locations. Just merge this file structure into your CodeIgniter application.
+
+h2. Basic Usage
+
+After installing the files into your application, you can use the library like so:
+
+<pre><code><?php
+
+class Auth extend Controller {
+
+	function Auth()
+	{
+		parent::Controller();
+		
+		// load the library
+		$this->load->library('ExtID');
+	}
+	
+	/**
+	 * Starts the authentication proccess
+	 *
+	 * This is just a normal page. It will have your login options
+	 * as links for the user to select from.
+	 */
+	function index()
+	{
+		// Build the needed markup using the default config
+		$data['login_code'] = $this->extid->generate_login('default');
+		
+		// Load your page
+		$this->load->view('login_page', $data);
+	}
+	
+	/**
+	 * Handles the actual logging in
+	 *
+	 * This is where the login link in the /auth/index route direct
+	 * your user. The name of this route is set in the config.
+	 */
+	function login()
+	{
+		$this->extid->authenticate();
+	}
+	
+	/**
+	 * Completes the authentication proccess
+	 *
+	 * This function collects the data sent back from the provider.
+	 */
+	function finish_auth()
+	{
+		$data = $this->extid->finish_auth();
+		
+		//
+		// $data now contains the user's info sent back from the provider. Any
+		// values not provided will be NULL. If the provider is Facebook, there
+		// is an extra value, 'id', which refers to the user's Facebook ID number.
+		//
+		// $data = array(
+		//   'fullname' => string, the user's name
+		//   'nickname' => string, the user's username/nickname
+		//   'email'    => string, the user's email address (never provided by Twitter)
+		//   'id'       => string, only if provider is Facebook
+		// )
+		//
+	}
+	
+	/**
+	 * Loads icons
+	 */
+	function load_icon()
+	{
+		$this->extid->load_image();
+	}
+
+}
+
+/* End of file auth.php */
+/* Location: ./system/application/controllers/auth.php */</code></pre>
+
+
+
+
