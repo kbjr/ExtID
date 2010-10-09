@@ -142,48 +142,56 @@ class ExtID {
 			'user_data' => 'OpenID Address',
 			'address'   => '%U',
 			'text'      => 'Sign in with OpenID',
-			'image'     => 'openid.png'
+			'image'     => 'openid.png',
+			'secure'    => false
 		),
 		'google' => array(
 			'auth_type' => EXTID_AUTH_AX,
 			'address'   => 'https://www.google.com/accounts/o8/id',
 			'text'      => 'Sign in using your Google Account',
-			'image'     => 'google.png'
+			'image'     => 'google.png',
+			'secure'    => false
 		),
 		'yahoo' => array(
 			'auth_type' => EXTID_AUTH_AX,
 			'address'   => 'https://www.yahoo.com',
 			'text'      => 'Sign in using Yahoo!',
-			'image'     => 'yahoo.png'
+			'image'     => 'yahoo.png',
+			'secure'    => false
 		),
 		'aol' => array(
 			'auth_type' => EXTID_AUTH_SREG,
 			'address'   => 'openid.aol.com',
 			'text'      => 'Sign in with your AOL Account',
-			'image'     => 'aol.png'
+			'image'     => 'aol.png',
+			'secure'    => false
 		),
 		'myspace' => array(
 			'auth_type' => EXTID_AUTH_SREG,
 			'address'   => 'http://www.myspace.com',
 			'text'      => 'Sign in using MySpaceID',
-			'image'     => 'myspace.png'
+			'image'     => 'myspace.png',
+			'secure'    => false
 		),
 		'blogger' => array(
 			'auth_type' => EXTID_AUTH_SREG,
 			'user_data' => 'Blogger Account',
 			'address'   => 'http://%U.blogspot.com',
 			'text'      => 'Sign in with your Blogger Account',
-			'image'     => 'blogger.png'
+			'image'     => 'blogger.png',
+			'secure'    => false
 		),
 		'facebook' => array(
 			'auth_type' => EXTID_AUTH_FACEBOOK,
 			'text'      => 'Connect with Facebook',
-			'image'     => 'facebook.png'
+			'image'     => 'facebook.png',
+			'secure'    => true
 		),
 		'twitter' => array(
 			'auth_type' => EXTID_AUTH_TWITTER,
 			'text'      => 'Sign in with Twitter',
-			'image'     => 'twitter.png'
+			'image'     => 'twitter.png',
+			'secure'    => true
 		)
 	);
 	
@@ -569,6 +577,7 @@ class ExtID {
 		// Add extra provider data
 		$result['provider'] = $provider;
 		$result['address']  = $provider_config['address'];
+		$result['provider_is_secure'] = $provider_config['secure'];
 		
 		return $result;
 	}
