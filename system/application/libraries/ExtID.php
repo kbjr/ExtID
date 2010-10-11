@@ -133,6 +133,15 @@ class ExtID {
 	}
 	
 	/**
+	 * Redirects to another page
+	 */
+	protected static function redirect($url)
+	{
+		CI()->load->helper('url');
+		redirect($url);
+	}
+	
+	/**
 	 * A list of the valid providers with all of
 	 * the needed configuration data.
 	 */
@@ -228,6 +237,10 @@ class ExtID {
 		// Include the OpenID class
 		require_once EXTID_PATH.'EasyOpenID.php';
 		$this->openid = new EasyOpenID();
+		
+//////////////////////////////////////////////////////
+//		CI()->load->library('firephp');
+//////////////////////////////////////////////////////
 	}
 	
 	/**
@@ -421,6 +434,11 @@ class ExtID {
 		// Parse URL data
 		$config_id = CI()->uri->segment(3);
 		$provider = CI()->uri->segment(4);
+		if (strpos($provider, '?') !== false)
+		{
+			$provider = explode('?', $provider);
+			$provider = $provider[0];
+		}
 		
 		// Fetch the config
 		$config = unserialize(CI()->session->userdata(EXTID_SESSION_CONFIG.$config_id));
@@ -456,37 +474,32 @@ class ExtID {
 	{
 		$this->fetch_midstep_data($config_id, $provider, $config, $provider_config);
 		
+		// The finish auth route
+		$next = $config['callback'].'/'.$config_id.'/'.$provider;
+		
 		// Login...
 		switch ($provider_config['auth_type'])
 		{
 			case EXTID_AUTH_SREG:
-				$err = $this->openid->try_auth_sreg($provider_config['address'], $config['callback'].'/'.$config_id.'/'.$provider,
+				$err = $this->openid->try_auth_sreg($provider_config['address'], $next,
 					array(), array( 'fullname', 'email', 'nickname' ), array());
 			break;
 			case EXTID_AUTH_AX:
-				$err = $this->openid->try_auth_ax($provider_config['address'], $config['callback'].'/'.$config_id.'/'.$provider,
+				$err = $this->openid->try_auth_ax($provider_config['address'], $next,
 					array(), array( 'firstname', 'lastname', 'email', 'nickname' ), array());
 			break;
 			case EXTID_AUTH_TWITTER:
 				$this->oauth->twitter->initialize($provider_config['app_id'], $provider_config['secret']);
-				$this->oauth->twitter->authenticate($config['callback'].'/'.$config_id.'/'.$provider);
-				CI()->load->helper('url');
-				redirect($this->oauth->twitter->login_url());
+				$this->oauth->twitter->authenticate($next);
+				self::redirect($this->oauth->twitter->login_url());
 			break;
 			case EXTID_AUTH_FACEBOOK:
 				$this->oauth->facebook->initialize($provider_config['app_id'], $provider_config['secret']);
-				if ($this->oauth->facebook->is_active)
+				if (! $this->oauth->facebook->is_active)
 				{
-					CI()->load->helper('url');
-					redirect($config['callback']);
+					$next = $this->oauth->facebook->login_url(array( 'next' => CI()->config->item('base_url').$next ));
 				}
-				else
-				{
-					$next = CI()->config->item('base_url').$config['callback'].'/'.$config_id.'/'.$provider;
-					$next = $this->oauth->facebook->login_url(array( 'next' => $next ));
-					header('Location: '.$next);
-					die();
-				}
+				self::redirect($next);
 			break;
 		}
 		
@@ -538,6 +551,10 @@ class ExtID {
 					unset($result['firstname']);
 					unset($result['lastname']);
 				}
+				if (! isset($result['nickname']))
+				{
+					$result['nickname'] = null;
+				}
 			break;
 			case EXTID_AUTH_TWITTER:
 				$this->oauth->twitter->initialize($provider_config['app_id'], $provider_config['secret']);
@@ -576,7 +593,7 @@ class ExtID {
 		
 		// Add extra provider data
 		$result['provider'] = $provider;
-		$result['address']  = $provider_config['address'];
+		$result['address'] = @$provider_config['address'];  // Yeah, ok, i used a @, get over it
 		$result['provider_is_secure'] = $provider_config['secure'];
 		
 		return $result;

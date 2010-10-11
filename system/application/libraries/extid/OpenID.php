@@ -457,7 +457,7 @@ class Openid {
 			case OPENID_RETURN_CANCEL:
 				$r = 'Verification was canceled';
 			break;
-			case OPENID_RETURN_NO_URL:
+			case OPENID_RETURN_FAILURE:
 				$r = 'Verification failed';
 			break;
 			default:
@@ -707,7 +707,7 @@ class Openid {
 		// No auth request means we can't begin OpenID.
 		if (! $auth_request)
 		{
-			return $this->_throw_error(OPENID_RETURN_BAD_URL);    ///////  THIS IS THE ERROR  ////////
+			return $this->_throw_error(OPENID_RETURN_BAD_URL);
 		}
 		
 		// Create UI if needed

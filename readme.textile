@@ -1,7 +1,7 @@
 h1. ExtID
 
 Author: James Brumond
-Version 0.2.2-b
+Version 0.2.3-rc
 
 Copyright 2010 James Brumond
 Dual licensed under MIT and GPL
@@ -10,7 +10,7 @@ h2. Description
 
 An easy to use external authentication library for CodeIgniter applications. This library handles both OpenID and OAuth requests to provide a simple interface to remote authentication.
 
-For full documentation, see the project home page at http://code.kbjrweb.com/project/extid
+For full documentation, see the project home page at "http://code.kbjrweb.com/project/extid":http://code.kbjrweb.com/project/extid
 
 h2. Installation
 
@@ -76,7 +76,7 @@ class Auth extend Controller {
 		//   'fullname' => string, the user's name
 		//   'nickname' => string, the user's username/nickname
 		//   'email'    => string, the user's email address (never provided by Twitter)
-		//   'id'       => string, only if provider is Facebook
+		//   'id'       => string, only if provider is Facebook/Twitter
 		// )
 		//
 	}
