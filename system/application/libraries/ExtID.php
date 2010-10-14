@@ -74,6 +74,9 @@ define('EXTID_AUTH_TWITTER', 'twitter');
 // The user data placeholder
 define('EXTID_USERDATA', '%U');
 
+// The address used for blogspot (put here to avoid some stupidity...)
+define('EXTID_BLOGSPOT_ADDRESS', 'http://'.EXTID_USERDATA.'.blogspot.com');
+
 // ---------------------------------------------------------------------------
 
 /**
@@ -149,7 +152,7 @@ class ExtID {
 		'openid' => array(
 			'auth_type' => EXTID_AUTH_SREG,
 			'user_data' => 'OpenID Address',
-			'address'   => '%U',
+			'address'   => EXTID_USERDATA,
 			'text'      => 'Sign in with OpenID',
 			'image'     => 'openid.png',
 			'secure'    => false
@@ -185,7 +188,7 @@ class ExtID {
 		'blogger' => array(
 			'auth_type' => EXTID_AUTH_SREG,
 			'user_data' => 'Blogger Account',
-			'address'   => 'http://%U.blogspot.com',
+			'address'   => EXTID_BLOGSPOT_ADDRESS,
 			'text'      => 'Sign in with your Blogger Account',
 			'image'     => 'blogger.png',
 			'secure'    => false
@@ -238,9 +241,12 @@ class ExtID {
 		require_once EXTID_PATH.'EasyOpenID.php';
 		$this->openid = new EasyOpenID();
 		
-//////////////////////////////////////////////////////
-//		CI()->load->library('firephp');
-//////////////////////////////////////////////////////
+		// Set the random generator
+		$rand_source = self::read_config('rand_source');
+		if (! defined('Auth_OpenID_RAND_SOURCE') && $rand_source !== false)
+		{
+			define('Auth_OpenID_RAND_SOURCE', $rand_source);
+		}
 	}
 	
 	/**
@@ -647,5 +653,5 @@ class ExtID {
 
 
 
-/* End of file ExtAuth.php */
-/* Location ./system/application/libraries/ExtAuth.php */
+/* End of file ExtID.php */
+/* Location ./system/application/libraries/ExtID.php */
