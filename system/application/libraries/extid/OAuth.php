@@ -350,13 +350,13 @@ class OAuth_Twitter {
 	public function initialize($key, $secret)
 	{
 		// Check the public key
-		if (! is_string($key) || strlen($key) !== 22)
+		if (! is_string($key))
 		{
 			return OAuth()->raise('Invalid twitter key "'.$key.'"', E_USER_WARNING);
 		}
 		
 		// Check the private key
-		if (! is_string($secret) || strlen($secret) !== 40)
+		if (! is_string($secret))
 		{
 			return OAuth()->raise('Invalid twitter secret "'.$secret.'"', E_USER_WARNING);
 		}
