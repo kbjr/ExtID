@@ -42,3 +42,4 @@ class Auth extends Controller {
 }
 
 /* End of file auth.php */
+/* Location ./application/controllers/auth.php */

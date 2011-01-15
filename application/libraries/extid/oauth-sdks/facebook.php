@@ -1,5 +1,12 @@
 <?php
 
+if (!function_exists('curl_init')) {
+  throw new Exception('Facebook needs the CURL PHP extension.');
+}
+if (!function_exists('json_decode')) {
+  throw new Exception('Facebook needs the JSON PHP extension.');
+}
+
 /**
  * Thrown when an API call returns an exception.
  *
@@ -316,12 +323,6 @@ class Facebook
     }
     return $this;
   }
-  
-  public function deleteSession() {
-    $this->session = null;
-    $this->sessionLoaded = false;
-    $this->setCookieFromSession(null);
-  }
 
   /**
    * Get the session object. This will automatically look for a signed session
@@ -609,6 +610,14 @@ class Facebook
 
     curl_setopt_array($ch, $opts);
     $result = curl_exec($ch);
+
+    if (curl_errno($ch) == 60) { // CURLE_SSL_CACERT
+      self::errorLog('Invalid or no certificate authority found, using bundled information');
+      curl_setopt($ch, CURLOPT_CAINFO,
+                  dirname(__FILE__) . '/fb_ca_chain_bundle.crt');
+      $result = curl_exec($ch);
+    }
+
     if ($result === false) {
       $e = new FacebookApiException(array(
         'error_code' => curl_errno($ch),
@@ -954,3 +963,4 @@ class Facebook
 }
 
 /* End of file facebook.php */
+/* Location ./application/libraries/extid/oauth-sdks/facebook.php */
