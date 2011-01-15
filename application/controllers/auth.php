@@ -18,16 +18,27 @@ class Auth extends Controller {
 	// Handles the startup of the authentication process
 	function login()
 	{
-		$this->extid->authenticate();
+		try
+		{
+			$this->extid->authenticate();
+		}
+		catch (Exception $e)
+		{
+			$data['error'] = $e->getMessage();
+			$this->load->view('auth_test', $data);
+		}
 	}
 	
 	// Handles the middle stage of a 3Leg auth (eg. Twitter) as well
 	// as completing OpenID auths
 	function callback()
 	{
-		try {
+		try
+		{
 			$data['result'] = $this->extid->finish_auth();
-		} catch (Exception $e) {
+		}
+		catch (Exception $e)
+		{
 			$data['error'] = $e->getMessage();
 		}
 		$this->load->view('auth_test', $data);

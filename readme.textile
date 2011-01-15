@@ -1,9 +1,9 @@
 h1. ExtID
 
 Author: James Brumond
-Version 0.2.3-dev
+Version 0.3.1-dev
 
-Copyright 2010 James Brumond
+Copyright 2011 James Brumond
 Dual licensed under MIT and GPL
 
 h2. Description
@@ -25,13 +25,11 @@ After installing the files into your application, you can use the library like s
 
 <pre><code><?php
 
-class Auth extend Controller {
+class Auth extends Controller {
 
 	function Auth()
 	{
 		parent::Controller();
-		
-		// load the library
 		$this->load->library('ExtID');
 	}
 	
@@ -47,7 +45,7 @@ class Auth extend Controller {
 		$data['login_code'] = $this->extid->generate_login('default');
 		
 		// Load your page
-		$this->load->view('login_page', $data);
+		$this->load->view('auth_test', $data);
 	}
 	
 	/**
@@ -58,7 +56,15 @@ class Auth extend Controller {
 	 */
 	function login()
 	{
-		$this->extid->authenticate();
+		try
+		{
+			$this->extid->authenticate();
+		}
+		catch (Exception $e)
+		{
+			$data['error'] = $e->getMessage();
+			$this->load->view('auth_test', $data);
+		}
 	}
 	
 	/**
@@ -66,14 +72,21 @@ class Auth extend Controller {
 	 *
 	 * This function collects the data sent back from the provider.
 	 */
-	function finish_auth()
+	function callback()
 	{
-		$data = $this->extid->finish_auth();
+		try
+		{
+			$data['result'] = $this->extid->finish_auth();
+		}
+		catch (Exception $e)
+		{
+			$data['error'] = $e->getMessage();
+		}
 		
 		//
-		// $data now contains the user's info sent back from the provider. Any
-		// values not provided will be NULL. If the provider is Facebook, there
-		// is an extra value, 'id', which refers to the user's Facebook ID number.
+		// $data['result'] now contains the user's info sent back from the provider. Any
+		// values not provided will be NULL. If the provider is Facebook or Twitter, there
+		// is an extra value, 'id', which refers to the user's ID number.
 		//
 		// $data = array(
 		//   'fullname' => string, the user's name
@@ -82,20 +95,22 @@ class Auth extend Controller {
 		//   'id'       => string, only if provider is Facebook/Twitter
 		// )
 		//
+		
+		$this->load->view('auth_test', $data);
 	}
 	
 	/**
-	 * Loads icons
+	 * Loads resource files
 	 */
-	function load_icon()
+	function resource()
 	{
-		$this->extid->load_image();
+		$this->extid->load_resource();
 	}
 
 }
 
 /* End of file auth.php */
-/* Location: ./system/application/controllers/auth.php */</code></pre>
+/* Location ./application/controllers/auth.php */</code></pre>
 
 
 
