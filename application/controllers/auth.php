@@ -11,7 +11,7 @@ class Auth extends Controller {
 	// The main test page
 	function index()
 	{
-		$data['login_code'] = $this->extid->generate_login('default');
+		$data['extid_config'] = 'default';
 		$this->load->view('auth_test', $data);
 	}
 	
@@ -25,15 +25,18 @@ class Auth extends Controller {
 	// as completing OpenID auths
 	function callback()
 	{
-		$data = $this->extid->finish_auth();
-		header('Content-Type: text/plain');
-		print_r($data); die();
+		try {
+			$data['result'] = $this->extid->finish_auth();
+		} catch (Exception $e) {
+			$data['error'] = $e->getMessage();
+		}
+		$this->load->view('auth_test', $data);
 	}
 	
-	// Loads icons
-	function load_icon()
+	// Loads resource files
+	function resource()
 	{
-		$this->extid->load_image();
+		$this->extid->load_resource();
 	}
 
 }

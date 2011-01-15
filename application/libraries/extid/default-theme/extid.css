@@ -1,0 +1,76 @@
+@charset "utf-8";
+
+/*
+|----------------------------------------------------------
+| ExtID Core Stylesheet
+|----------------------------------------------------------
+|
+| Contains a basic css layout for ExtID generated markup.
+|
+| @author     James Brumond
+| @copyright  Copyright 2011 James Brumond
+| @license    Dual licensed under MIT and GPL
+|
+*/
+
+.extid-listing {
+	width: 270px;
+	padding: 15px;
+	background-color: #ddd;
+	border: 1px #888 solid;
+}
+
+.extid-item {
+	list-style: none;
+}
+
+.extid-item .extid-provider {
+	height: 12px;
+	font-size: 12px;
+	line-height: 12px;
+	text-decoration: none;
+	display: inline-block;
+	padding: 5px 5px 5px 20px;
+	background: transparent none left center no-repeat;
+}
+
+.extid-item input[type=text] {
+	margin: 5px;
+	padding: 3px;
+	background-color: #eee;
+	border: 1px #aaa solid;
+}
+
+.extid-item.openid .extid-provider {
+	background-image: url('./openid.png');
+}
+
+.extid-item.google .extid-provider {
+	background-image: url('./google.png');
+}
+
+.extid-item.yahoo .extid-provider {
+	background-image: url('./yahoo.png');
+}
+
+.extid-item.aol .extid-provider {
+	background-image: url('./aol.png');
+}
+
+.extid-item.myspace .extid-provider {
+	background-image: url('./myspace.png');
+}
+
+.extid-item.blogger .extid-provider {
+	background-image: url('./blogger.png');
+}
+
+.extid-item.facebook .extid-provider {
+	background-image: url('./facebook.png');
+}
+
+.extid-item.twitter .extid-provider {
+	background-image: url('./twitter.png');
+}
+
+/* End of file extid.css */

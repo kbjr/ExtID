@@ -337,7 +337,17 @@ class Openid {
 	 */
 	protected function _get_trust_root()
 	{
-		return CI()->config->item('base_url');
+		static $base_url;
+		if (! $base_url)
+		{
+			$base_url = CI()->config->item('base_url');
+			$index_page = CI()->config->item('index_page');
+			if (! empty($index_page))
+			{
+				$base_url.$index_page.'/';
+			}
+		}
+		return $base_url;
 	}
 
 	/**
@@ -360,7 +370,7 @@ class Openid {
 	 */
 	protected function _get_self()
 	{
-		return CI()->config->item('base_url').substr(CI()->uri->uri_string(), 1);
+		return $this->_get_trust_root().substr(CI()->uri->uri_string(), 1);
 	}
 
 	/**

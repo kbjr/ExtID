@@ -32,7 +32,7 @@
 |                 generated login markup.
 |  ['list_id']    The ID to apply to the <ul> element.
 |  ['route']      The route that does the authentication.
-|  ['icon_route'] The route that handles image loading.
+|  ['resources']  The route that handles image loading.
 |  ['force_link'] Always use anchors, even for forms.
 |  ['callback']   The final callback URI.
 |  ['google']     Customized overrides for the Google option.
@@ -45,10 +45,11 @@
 |  ['customs']    An array of custom provider types.
 */
 
-$config['default']['providers']  = array('google', 'facebook', 'twitter', 'myspace', 'yahoo', 'aol', 'blogger');
-$config['default']['classname']  = 'extid-item';
+$config['default']['providers']  = array('google', 'yahoo', 'aol', 'blogger');
 $config['default']['route']      = 'auth/login';
 $config['default']['force_link'] = true;
+$config['default']['callback']   = 'auth/callback';
+$config['default']['resources']  = 'auth/resource';
 
 
 /* End of file extid.php */

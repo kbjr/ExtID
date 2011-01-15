@@ -266,20 +266,45 @@ class ExtID {
 	 * Builds a block of markup for a given provider
 	 *
 	 * @access  protected
-	 * @param   array     the config options
+	 * @param   array     @cfg
+	 * @cfg     array     config
+	 * @cfg     array     provider_config
+	 * @cfg     string    provider
+	 * @cfg     string    id
+	 * @cfg     string    template
+	 * @cfg     int       indent
 	 * @return  string
 	 */
-	protected function generate_markup_block($config, $provider_config, $provider, $id)
+	protected function generate_markup_block($options)
 	{
+		// Export the options array
+		$options = array_merge(array(
+			'config' => null,
+			'provider_config' => null,
+			'provider' => null,
+			'id' => null,
+			'template' => null,
+			'indent' => 0
+		), $options);
+		extract($options);
+		
+		// Build the indent string
+		$indent = str_repeat("\t", $indent);
+		
 		// Build the attribute string
 		$attr = $provider;
 		if (isset($config['classname']))
 		{
 			$attr = $config['classname'].' '.$attr;
 		}
-		$attr = ' class="'.$attr.'"';
+		$attr = ' class="'.$attr.' extid-item"';
 		
 		$base_url = CI()->config->item('base_url');
+		$index_page = CI()->config->item('index_page');
+		if (! empty($index_page))
+		{
+			$base_url .= $index_page.'/';
+		}
 		
 		// Build the route
 		$route = $config['route'];
@@ -291,49 +316,46 @@ class ExtID {
 		
 		// Get the icon loader
 		$icon = $provider_config['image'];
-		if (isset($config['icon_route']))
+		if (isset($config['resources']))
 		{
-			$icon = $config['icon_route'].'/'.$icon;
+			$icon = $config['resources'].'/'.$icon;
 		}
-		
-		// Build the style string
-		$style = ' style="display: inline-block; background: transparent url('.$base_url.$icon.') center left no-repeat;"';
 		
 		// Build the text string
 		$text = $provider_config['text'];
 		if (isset($provider_config['hide_text']) && $provider_config['hide_text'])
 		{
-			$text = '<span style="height:1px;width:1px;visibility:hidden">'.$text.'</span>';
+			$text = "\t".'<span style="height:1px;width:1px;visibility:hidden">'.$text.'</span>';
 		}
 		
 		// Build the markup block
-		$markup = array( '<li'.$attr.'><div>' );
+		$markup = array( $indent.'<li'.$attr.'><div>' );
 		if (isset($provider_config['user_data']))
 		{
 			if (isset($config['force_link']) && $config['force_link'])
 			{
-				$text_line = '<a href="#"'.$style.'>'.$text.'</a>';
+				$text_line = "\t".'<a href="#" class="extid-provider">'.$text.'</a>';
 			}
 			else
 			{
-				$text_line = '<span'.$style.'>'.$text.'</span>';
+				$text_line = "\t".'<span class="extid-provider">'.$text.'</span>';
 			}
 			
-			$markup[] = implode("\n", array(
+			$markup[] = implode("\n".$indent."\t", array(
 				$text_line,
 				'<form action="'.$route.'" method="post">',
-				'<input type="text" name="user_data" value="" placeholder="'.$provider_config['user_data'].'" />',
-				'<input type="submit" value="Sign In" />',
+				"\t".'<input type="text" name="user_data" value="" placeholder="'.$provider_config['user_data'].'" />',
+				"\t".'<input type="submit" value="Sign In" />',
 				'</form>'
 			));
 		}
 		else
 		{
-			$markup[] = '<a href="'.$route.'"'.$style.'>'.$text.'</a>';
+			$markup[] = "\t".'<a href="'.$route.'" class="extid-provider">'.$text.'</a>';
 		}
 		$markup[] = '</div></li>';
 		
-		return implode("\n", $markup);
+		return implode("\n".$indent, $markup);
 	}
 	
 	/**
@@ -366,7 +388,7 @@ class ExtID {
 	 * @param   array     the config to use
 	 * @return  string
 	 */
-	public function generate_login($config = null)
+	public function generate_login($config = null, $indent = 0, $code_template = null)
 	{
 		// Stores the configuration's unique ID
 		$config_id = null;
@@ -410,7 +432,7 @@ class ExtID {
 		}
 		
 		// Build the markup
-		$markup = array( '<ul'.$id_attr.'>' );
+		$markup = array( '<ul'.$id_attr.' class="extid-listing">' );
 		foreach ($config['providers'] as $provider)
 		{
 			if (! isset(self::$providers[$provider]))
@@ -418,7 +440,14 @@ class ExtID {
 				return $this->raise('Unknown provider "'.$provider.'"');
 			}
 			$provider_config = $this->get_provider_config($provider, $config);
-			$markup[] = $this->generate_markup_block($config, $provider_config, $provider, $config_id);
+			$markup[] = $this->generate_markup_block(array(
+				'config'          => $config,
+				'provider_config' => $provider_config,
+				'provider'        => $provider,
+				'id'              => $config_id,
+				'template'        => $code_template,
+				'indent'          => $indent
+			));
 		}
 		$markup[] = '</ul>';
 		$markup = implode("\n", $markup);
@@ -503,7 +532,8 @@ class ExtID {
 				$this->oauth->facebook->initialize($provider_config['app_id'], $provider_config['secret']);
 				if (! $this->oauth->facebook->is_active)
 				{
-					$next = $this->oauth->facebook->login_url(array( 'next' => CI()->config->item('base_url').$next ));
+					$base_url = CI()->config->item('base_url').'/'.CI()->config->item('index_page');
+					$next = $this->oauth->facebook->login_url(array( 'next' => $base_url.$next ));
 				}
 				self::redirect($next);
 			break;
@@ -606,28 +636,28 @@ class ExtID {
 	}
 	
 	/**
-	 * Loads images for the login form
+	 * Loads resources for the login form
 	 *
 	 * @access  public
 	 * @param   string    the image to load
 	 * @return  void
 	 */
-	public function load_image($img = null)
+	public function load_resource($file = null)
 	{
-		// If mo image is given, default it to URI segment 3
-		if (! $img)
+		// If no file is given, default it to URI segment 3
+		if (! $file)
 		{
-			$img = CI()->uri->segment(3);
+			$file = CI()->uri->segment(3);
 		}
 		
 		// Check that we have a string value
-		if (! is_string($img))
+		if (! is_string($file))
 		{
 			$this->raise('Invalid value given for parameter one, string expected', E_USER_ERROR);
 		}
 		
-		// Check that the image exists
-		$file_path = EXTID_PATH.'icons/'.$img;
+		// Check that the file exists
+		$file_path = EXTID_PATH.'default-theme/'.$file;
 		if (! file_exists($file_path) || ! is_file($file_path))
 		{
 			show_404();
@@ -637,9 +667,35 @@ class ExtID {
 		CI()->load->helper('file');
 		$contents = read_file($file_path);
 		
-		// Output the image
-		CI()->output->set_header('Content-Type: image/png');
+		// Output the file
+		$header = get_mime_by_extension($file);
+		CI()->output->set_header('Content-Type: '.$header);
 		CI()->output->set_output($contents);
+	}
+	
+	/**
+	 * Load in the default theme stylesheet
+	 *
+	 * @access  public
+	 * @param   bool      return?
+	 * @return  mixed
+	 */
+	public function import_styles($config = 'default', $return = false)
+	{
+		if (is_string($config))
+		{
+			$config = self::read_config($config);
+		}
+		$href = $config['resources'].'/extid.css';
+		$str = '<link rel="stylesheet" type="text/css" href="'.$href.'" />';
+		if ($return)
+		{
+			return $str;
+		}
+		else
+		{
+			echo $str."\n";
+		}
 	}
 
 }
