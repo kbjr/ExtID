@@ -10,6 +10,9 @@ h2. Description
 
 An easy to use external authentication library for CodeIgniter applications. This library handles both OpenID and OAuth requests to provide a simple interface to remote authentication.
 
+Those interested in following the production of this library can do so on twitter ("@CI_ExtID":http://twitter.com/CI_ExtID)
+All inquiries, questions, comments, etc. can be passed alone either here on GitHub or to the email address ci.extid@gmail.com
+
 h2. Requires
 
 * PHP 5+
