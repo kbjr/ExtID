@@ -486,7 +486,7 @@ class ExtID {
 			$user_data = CI()->input->post('user_data');
 			if (! $user_data)
 			{
-				$user_data = CI()->session->userdata(EXTID_SESSION_CONFIG.$config_id.'userdata');
+				$user_data = CI()->session->userdata(EXTID_SESSION_CONFIG.$config_id.'_userdata');
 			}
 			if (! $user_data || empty($user_data))
 			{
