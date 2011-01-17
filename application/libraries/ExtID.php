@@ -492,7 +492,7 @@ class ExtID {
 			{
 				return $this->raise('No user input given', E_USER_WARNING);
 			}
-			CI()->session->set_userdata(EXTID_SESSION_CONFIG.$config_id.'userdata', $user_data);
+			CI()->session->set_userdata(EXTID_SESSION_CONFIG.$config_id.'_userdata', $user_data);
 			$provider_config['address'] = str_replace(EXTID_USERDATA, $user_data, $provider_config['address']);
 		}
 	}
