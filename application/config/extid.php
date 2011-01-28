@@ -45,7 +45,7 @@
 |  ['customs']    An array of custom provider types.
 */
 
-$config['default']['providers']  = array('google', 'yahoo', 'aol', 'blogger');
+$config['default']['providers']  = array('google', 'twitter', 'facebook', 'myspace', 'yahoo', 'aol', 'blogger');
 $config['default']['route']      = 'auth/login';
 $config['default']['force_link'] = true;
 $config['default']['callback']   = 'auth/callback';
