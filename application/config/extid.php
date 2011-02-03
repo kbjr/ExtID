@@ -50,6 +50,10 @@ $config['default']['route']      = 'auth/login';
 $config['default']['force_link'] = true;
 $config['default']['callback']   = 'auth/callback';
 $config['default']['resources']  = 'auth/resource';
+$config['default']['twitter']    = array(
+	'app_id' => 'WufM1zUzvOA3zJX335kCZA',
+	'secret' => 'Fat3eReSifyozkktebMDaigcGifRwnLQgtMCYrpc'
+);
 
 
 /* End of file extid.php */

@@ -162,7 +162,7 @@ class ExtID {
 			'address'   => 'https://www.google.com/accounts/o8/id',
 			'text'      => 'Sign in using your Google Account',
 			'image'     => 'google.png',
-			'secure'    => false
+			'secure'    => true
 		),
 		'yahoo' => array(
 			'auth_type' => EXTID_AUTH_AX,
@@ -516,20 +516,20 @@ class ExtID {
 		switch ($provider_config['auth_type'])
 		{
 			case EXTID_AUTH_SREG:
-				$err = $this->openid->try_auth_sreg($provider_config['address'], $next,
+				$err = $this->openid->try_auth_sreg(@$provider_config['address'], $next,
 					array(), array( 'fullname', 'email', 'nickname' ), array());
 			break;
 			case EXTID_AUTH_AX:
-				$err = $this->openid->try_auth_ax($provider_config['address'], $next,
+				$err = $this->openid->try_auth_ax(@$provider_config['address'], $next,
 					array(), array( 'firstname', 'lastname', 'email', 'nickname' ), array());
 			break;
 			case EXTID_AUTH_TWITTER:
-				$this->oauth->twitter->initialize($provider_config['app_id'], $provider_config['secret']);
+				$this->oauth->twitter->initialize(@$provider_config['app_id'], @$provider_config['secret']);
 				$this->oauth->twitter->authenticate($next);
 				self::redirect($this->oauth->twitter->login_url());
 			break;
 			case EXTID_AUTH_FACEBOOK:
-				$this->oauth->facebook->initialize($provider_config['app_id'], $provider_config['secret']);
+				$this->oauth->facebook->initialize(@$provider_config['app_id'], @$provider_config['secret']);
 				if (! $this->oauth->facebook->is_active)
 				{
 					$base_url = CI()->config->item('base_url').'/'.CI()->config->item('index_page');
@@ -564,7 +564,7 @@ class ExtID {
 		$this->fetch_midstep_data($config_id, $provider, $config, $provider_config);
 		
 		// Login...
-		switch ($provider_config['auth_type'])
+		switch (@$provider_config['auth_type'])
 		{
 			case EXTID_AUTH_SREG:
 			case EXTID_AUTH_AX:
@@ -593,7 +593,7 @@ class ExtID {
 				}
 			break;
 			case EXTID_AUTH_TWITTER:
-				$this->oauth->twitter->initialize($provider_config['app_id'], $provider_config['secret']);
+				$this->oauth->twitter->initialize(@$provider_config['app_id'], @$provider_config['secret']);
 				if ($this->oauth->twitter->is_active)
 				{
 					$data = $this->oauth->twitter->api('account/verify_credentials');
@@ -630,7 +630,7 @@ class ExtID {
 		// Add extra provider data
 		$result['provider'] = $provider;
 		$result['address'] = @$provider_config['address'];  // Yeah, ok, i used a @, get over it
-		$result['provider_is_secure'] = $provider_config['secure'];
+		$result['provider_is_secure'] = @$provider_config['secure'];
 		
 		return $result;
 	}

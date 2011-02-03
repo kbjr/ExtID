@@ -1,22 +1,22 @@
 <?php
 
-class Auth extends Controller {
+class Auth extends CI_Controller {
 
-	function Auth()
+	public function __construct()
 	{
-		parent::Controller();
+		parent::__construct();
 		$this->load->library('ExtID');
 	}
 	
 	// The main test page
-	function index()
+	public function index()
 	{
 		$data['extid_config'] = 'default';
 		$this->load->view('auth_test', $data);
 	}
 	
 	// Handles the startup of the authentication process
-	function login()
+	public function login()
 	{
 		try
 		{
@@ -31,7 +31,7 @@ class Auth extends Controller {
 	
 	// Handles the middle stage of a 3Leg auth (eg. Twitter) as well
 	// as completing OpenID auths
-	function callback()
+	public function callback()
 	{
 		try
 		{
@@ -44,8 +44,16 @@ class Auth extends Controller {
 		$this->load->view('auth_test', $data);
 	}
 	
+	// Clears out the session
+	public function clear()
+	{
+		$this->session->sess_destroy();
+		$this->load->helper('url');
+		redirect('auth');
+	}
+	
 	// Loads resource files
-	function resource()
+	public function resource()
 	{
 		$this->extid->load_resource();
 	}

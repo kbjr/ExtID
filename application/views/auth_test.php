@@ -100,7 +100,8 @@
 			}
 
 		?>
-
+		
+		<p><br /><a href="auth/clear">Clear Session</a></p>
 		<p><br />Page rendered in {elapsed_time} seconds</p>
 	
 	</div>
