@@ -17,7 +17,6 @@
 | your ./system/application/config/config.php file. 
 |
 |   $config['uri_protocol'] = "PATH_INFO";
-|   $config['enable_query_strings'] = TRUE;
 |
 | This is because providers send data back to your application using
 | GET querys, which are disabled by default in CodeIgniter.

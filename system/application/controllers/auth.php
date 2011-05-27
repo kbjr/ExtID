@@ -5,6 +5,9 @@ class Auth extends Controller {
 	function Auth()
 	{
 		parent::Controller();
+		// Enable query strings
+		parse_str($_SERVER['QUERY_STRING'], $_GET);
+		// Load the ExtID library
 		$this->load->library('ExtID');
 	}
 	
